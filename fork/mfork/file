@@ -1,0 +1,7 @@
+hehe,ni shi ge hao ren 
+before fork:
+i am child pid:20408 ppid:20407
+chirld:1 1 0xbfbf47d8 0x8049a48 
+before fork:
+i am father pid:20407 ppid:19791
+father:0 0 0xbfbf47d8 0x8049a48 
