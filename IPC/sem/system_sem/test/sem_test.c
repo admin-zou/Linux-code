@@ -6,10 +6,9 @@ int main()
 {
 	int sem_id  = sem_create(1); //需要创建的信号量集的数目
 	printf("%d \n",sem_id);
-//若sem_id值为-1，信号量创建失败。说明sem_lock.h的project_num需要更换，需要生成新的key值
+	//若sem_id值为-1，信号量创建失败。说明已经有ipc对象了，使用ipcrm将它删除一下
 
-
-	sem_init(sem_id, 0, 1); //将0号信号量设置为1
+	sem_init(sem_id, 0, 1); //将0号信号量初始化为1
 
 	pid_t id = fork();
 	if(id < 0)
@@ -24,11 +23,11 @@ int main()
 			printf("A");
 			fflush(stdout);
 
-			sleep(3);
+			sleep(1);
 			printf("A");
 			fflush(stdout);
 
-			sleep(2);
+			sleep(1);
 			sem_v(sem_id, 0);//对0号信号量进行v操作
 		}
 

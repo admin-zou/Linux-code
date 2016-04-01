@@ -15,7 +15,7 @@ int sem_init(int sem_id, int sem, int val)
 {//sem表示信号量的下表，意思是要对哪个信号量操作
 	semun_t semval;
 	semval.val = val;
-	return semctl(sem_id, sem, SETVAL, semval);	//对信号量初始化
+	return semctl(sem_id, sem, SETVAL, semval);	//对信号量初始化,一般是三个参数，第四个参数若有一定是semun结构体
 }
 
 int sem_create(int nsems)
@@ -31,8 +31,8 @@ int sem_get(int nsems)
 static int my_sem_op(int sem_id, int sem, int op)
 {//p操作和v操作都是通过这个函数来实现
 	struct sembuf _op;
-	_op.sem_num = sem;  //信号量的下表
-	_op.sem_op = op;
+	_op.sem_num = sem;  //信号量的下标
+	_op.sem_op = op;  
 	_op.sem_flg = 0; //SEM_UNDO
 	return semop(sem_id, &_op, 1);
 }
@@ -50,7 +50,6 @@ int sem_destroy(int sem_id)
 {
 	return semctl(sem_id, 0, IPC_RMID);
 }
-
 
 #ifdef _DEBUG_
 

@@ -36,7 +36,7 @@ static int my_sem_op(int sem_id, int sem, int op)
 	_op.sem_op = op;
 	_op.sem_flg = 0; //SEM_UNDO
 
-	return semop(sem_id, &_op, 1);
+	return semop(sem_id, &_op, 1); // 1 指明数组的个数为1个
 }
 
 int sem_p(int sem_id, int sem)
