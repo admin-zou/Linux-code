@@ -12,15 +12,12 @@ void* producer(void* arg)
 	int data = 0;
 	while(1)
 	{
-		pthread_mutex_lock(&mutex);
+			pthread_mutex_lock(&mutex); //1.lock
 			push_front(head, data++);
 			printf("product data:%d \n",data);
-		pthread_mutex_unlock(&mutex);
+			pthread_mutex_unlock(&mutex); //2.unlock
 			printf("you can consume now\n");
-		
-		pthread_cond_signal(&cond); 
-			// 唤醒cond,pthread_cond_wait(&cond,&mutex)成功并返回;
-
+			pthread_cond_signal(&cond); // 3. 唤醒等待队列上的一个等待线程,pthread_cond_wait(&cond,&mutex)成功并返回;
 		  //pthread_mutex_unlock(&mutex);//放到此处和上面的地方都可以
 		sleep(1);
 	}
@@ -32,18 +29,13 @@ void* consumer(void* arg)
 	
 	while(1)
 	{
-		pthread_mutex_lock(&mutex);  //上锁
-		
+			pthread_mutex_lock(&mutex);  //上锁,保证wait操作的原子性
 			while(is_empty(head))
 			{//
 				printf("data is empty,wait cond...\n");
-		
-		pthread_cond_wait(&cond,&mutex);
-	   		//效果相当于unlock（mutex），只有cond条件满足时唤醒
-		
+				pthread_cond_wait(&cond,&mutex);//效果相当于unlock（mutex），只有cond条件满足时唤醒，该函数将调用线程放入等待队列，然后解锁，成功返回后mutex又会锁上
 				printf("product done...,call consume...\n");
 			}
-	
 			//int ret = pop_front(head,&data);
 			int ret = pop_back(head,&data);
 			if(ret != False)
@@ -54,9 +46,7 @@ void* consumer(void* arg)
 			{
 				printf("no data to consume\n");
 			}
-	
-		pthread_mutex_unlock(&mutex);  //开锁
-		
+			pthread_mutex_unlock(&mutex);  //开锁
 			sleep(2);
 	}
 }
